@@ -1,0 +1,17 @@
+description = "Read your RSS and Atom feeds in a tab of their own, with the unread count on the tab"
+version = "1.0.0"
+command = "python3 main.py"
+# panes: to open its tab, draw it and show the unread count in the title.
+permissions = ["panes"]
+
+[settings.feeds]
+type = "list"
+default = []
+description = "Feed addresses (RSS or Atom), like https://example.com/feed.xml"
+
+[settings.refresh-minutes]
+type = "integer"
+default = 30
+min = 5
+max = 1440
+description = "How often to check the feeds, in minutes"
