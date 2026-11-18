@@ -1,12 +1,15 @@
 # RSS Reader for Lumen
 
-Read your RSS and Atom feeds in a tab of their own, with the unread count on
-the tab. A plugin for the [Lumen](https://github.com/lumenshell/lumen)
+Read your RSS and Atom feeds in a tab of their own or in a panel beside your
+work, with the unread count on the tab. A plugin for the [Lumen](https://github.com/lumenshell/lumen)
 terminal.
 
-Choose **RSS Reader** in the palette. Your feeds are listed on the left, with
+Choose **RSS Reader** in the palette to open it in a tab, or **RSS Reader
+(Panel)** to open it to the right of the pane you're in, where its label
+shows the unread count. If it's already open, either one goes back to it;
+press `q` first to move it. Your feeds are listed on the left, with
 **All** first; the items of the one chosen are on the right, newest first,
-with unread ones marked `●`. Enter opens an item in your browser and marks it
+with unread ones marked `●`. In a narrow panel, only the items are shown. Enter opens an item in your browser and marks it
 read.
 
 | Key | Does |
@@ -26,8 +29,8 @@ Open **Plugins** in Lumen's palette, find it under Browse and press `i`, or:
 lumen plugins install sn/rss
 ```
 
-It asks for `panes`: to open its tab, draw it and show the unread count in
-the tab's title.
+It asks for `panes`: to open its tab or panel, draw it and show the unread
+count on it.
 
 ## Settings
 

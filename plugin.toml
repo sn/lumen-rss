@@ -1,7 +1,7 @@
-description = "Read your RSS and Atom feeds in a tab of their own, with the unread count on the tab"
-version = "1.0.0"
+description = "Read your RSS and Atom feeds in a tab of their own or a panel beside your work, with the unread count"
+version = "1.1.0"
 command = "python3 main.py"
-# panes: to open its tab, draw it and show the unread count in the title.
+# panes: to open its tab or panel, draw it and show the unread count on it.
 permissions = ["panes"]
 
 [settings.feeds]

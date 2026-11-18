@@ -1,6 +1,8 @@
-"""RSS Reader: your feeds in a tab of their own. Choose RSS Reader in the
-palette to open it (or go back to it). The tab shows how many items are
-unread.
+"""RSS Reader: your feeds in a tab of their own, or in a panel beside what
+you're doing. Choose RSS Reader in the palette to open it in a tab, or RSS
+Reader (Panel) to open it to the right of the pane you're in. Either goes
+back to it if it's already open. The tab (or the panel's label) shows how
+many items are unread.
 
 Your feeds are on the left, with All first; the items of the one chosen are
 on the right, newest first, unread ones marked. Keys: ↑/↓ (or j/k) move,
@@ -65,8 +67,9 @@ def open_link(link: str) -> None:
 
 
 class Reader:
-    def __init__(self, view):
+    def __init__(self, view, panel=False):
         self.view = view
+        self.panel = panel  # a split in someone else's tab, not a tab of its own
         self.feeds = {}  # address -> feeds.Feed
         self.errors = {}  # address -> what went wrong
         self.order = urls()
@@ -171,7 +174,12 @@ class Reader:
         n = self.unread()
         try:
             await self.view.draw(self.lines())
-            await self.view.set_title(f"RSS ({n})" if n else "RSS")
+            name = f"RSS ({n})" if n else "RSS"
+            if self.panel:
+                # The tab belongs to whatever it was opened beside: label the split.
+                await self.view.set_pane_style(label=name)
+            else:
+                await self.view.set_title(name)
         except LumenError:
             pass
 
@@ -237,14 +245,21 @@ async def every_so_often():
             await reader.refresh()
 
 
-@app.command("RSS Reader")
-async def open_reader(pane):
+PANEL_SHARE = 0.3  # of the pane it's opened beside
+
+
+async def open_reader(beside=None):
+    """Open the reader, or go back to it. `beside` is the pane to open it to
+    the right of; without one it gets a tab."""
     global reader
     if reader and not reader.view.closed:
         await reader.view.focus()
         return
-    view = await app.new_tab(plugin_pane=True)
-    r = reader = Reader(view)
+    if beside is not None:
+        view = await beside.split("right", size=PANEL_SHARE, plugin_pane=True)
+    else:
+        view = await app.new_tab(plugin_pane=True)
+    r = reader = Reader(view, panel=beside is not None)
 
     @view.on_key
     async def key(name):
@@ -256,6 +271,17 @@ async def open_reader(pane):
     view.on_resize(r.show)
     asyncio.ensure_future(r.refresh())
     asyncio.ensure_future(every_so_often())
+
+
+# The id it has always had, so existing key bindings keep working.
+@app.command("RSS Reader", id="open_reader")
+async def in_tab(pane):
+    await open_reader()
+
+
+@app.command("RSS Reader (Panel)", id="open_panel")
+async def in_panel(pane):
+    await open_reader(pane)
 
 
 @app.on("settings-changed")
